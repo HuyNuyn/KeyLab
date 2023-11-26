@@ -1,0 +1,6 @@
+@echo off
+for /L %%i in (1,1,84) do (
+    for /L %%j in (1,1,30) do (
+        "C:\Program Files (x86)\The Scripps Research Institute\Vina\vina.exe" --receptor apo_system_model1.pdbqt --ligand CID_%%i.pdbqt --log logdock_%%i_%%j.txt --out out_%%i_%%j.pdbqt --config config.txt
+    )
+)
