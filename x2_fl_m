@@ -1,0 +1,41 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure()
+ax_fixed = fig.add_subplot(121, projection='3d')  # Khoảng không gian cố định
+ax_moving = fig.add_subplot(122, projection='3d')  # Hình nón thay đổi
+
+# Tạo hình nón ban đầu trong không gian cố định
+phi, theta = np.mgrid[0.0:0.5 * np.pi:100j, 0.0:2.0 * np.pi:100j]
+r = np.sin(phi)
+x = r * np.cos(theta)
+y = r * np.sin(theta)
+z_cone_fixed = np.sqrt(x**2 + y**2)
+ax_fixed.plot_surface(x, y, z_cone_fixed, color='blue', alpha=0.5)
+
+def update_position(event):
+    if event.inaxes == ax_fixed:
+        x = event.xdata
+        y = event.ydata
+        z = np.sqrt(x**2 + y**2) if (x is not None and y is not None) else None
+        
+        if z is not None:
+            ax_moving.clear()
+            phi, theta = np.mgrid[0.0:0.5 * np.pi:100j, 0.0:2.0 * np.pi:100j]
+            r = np.sin(phi) * z  # Bán kính tại mỗi điểm dựa trên giá trị z mới
+            x = r * np.cos(theta)
+            y = r * np.sin(theta)
+            z_cone_moving = np.sqrt(x**2 + y**2)
+            ax_moving.plot_surface(x, y, z_cone_moving, color='red', alpha=0.5)
+            
+            # Vẽ trục tọa độ cho không gian cố định
+            ax_fixed.quiver(0, 0, 0, 1, 0, 0, color='red', arrow_length_ratio=0.1)  # Trục x
+            ax_fixed.quiver(0, 0, 0, 0, 1, 0, color='green', arrow_length_ratio=0.1)  # Trục y
+            ax_fixed.quiver(0, 0, 0, 0, 0, 1, color='blue', arrow_length_ratio=0.1)  # Trục z
+            
+            plt.draw()
+
+fig.canvas.mpl_connect('motion_notify_event', update_position)
+
+plt.show()
