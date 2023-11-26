@@ -1,0 +1,39 @@
+#include <stdio.h>
+
+int main() {
+    FILE *output_file;
+    char filename[100];
+    char data[100];
+
+    output_file = fopen("C:\\Docking\\log\\output.txt", "w"); // T?o t?p m?i d? luu k?t qu?
+
+    if (output_file == NULL) {
+        perror("error creating output file");
+        return 1;
+    }
+
+    int i;
+    for (i = 1; i <= 30; i++) {
+        sprintf(filename, "C:\\Docking\\log\\logdock_lig1_%d.txt", i); // Tên file thay d?i theo i
+
+        FILE *file = fopen(filename, "r");
+        if (file == NULL) {
+            perror("error opening file");
+            return 1;
+        }
+
+        int line_number = 1;
+        while (fgets(data, sizeof(data), file) != NULL) {
+            if (line_number == 27) {
+                fprintf(output_file, "Data from file %d: %s", i, data); // Ghi d? li?u vào t?p m?i
+                break;
+            }
+            line_number++;
+        }
+
+        fclose(file);
+    }
+
+    fclose(output_file);
+    return 0;
+}
